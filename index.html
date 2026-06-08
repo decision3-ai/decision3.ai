@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>decision3.ai — OS for the Autonomous AI Economy</title>
+  <meta name="description" content="The operating system for the autonomous AI economy. Agents need to pay, remember, and be accountable. We build the open layer — Web2 and Web3." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── TOKENS ──────────────────────────────────── */
+    :root {
+      --bg:       #080808;
+      --orange:   #FF6B00;
+      --blue:     #0066FF;
+      --white:    #ffffff;
+      --muted:    #888888;
+      --dim:      #444444;
+      --border:   #1e1e1e;
+      --card:     #0d0d0d;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Space Grotesk', sans-serif;
+    }
+
+    /* ── BASE ────────────────────────────────────── */
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── LAYOUT ──────────────────────────────────── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ── BADGES ──────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+    .badge-green  { background: rgba(0,200,80,0.1);   color: #00c850; border: 1px solid rgba(0,200,80,0.2); }
+    .badge-orange { background: rgba(255,107,0,0.1);  color: var(--orange); border: 1px solid rgba(255,107,0,0.2); }
+    .badge-blue   { background: rgba(0,102,255,0.1);  color: var(--blue);   border: 1px solid rgba(0,102,255,0.2); }
+    .badge-dim    { background: rgba(255,255,255,0.04); color: #555; border: 1px solid #1a1a1a; }
+    .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ── BUTTONS ─────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 22px;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-orange { background: var(--orange); color: var(--white); }
+    .btn-submit {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--orange);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .btn-submit:hover { opacity: 0.85; }
+
+    /* ── SECTION ─────────────────────────────────── */
+    section {
+      padding: 96px 0;
+      border-top: 1px solid var(--border);
+    }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 48px;
+    }
+
+    /* ════════════════════════════════════════════════
+       NAV
+    ════════════════════════════════════════════════ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(8,8,8,0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+    .nav-logo { display: flex; align-items: center; }
+    .nav-logo svg { display: block; height: 30px; width: auto; }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    /* ════════════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════════════ */
+    #hero {
+      padding: 120px 0 96px;
+      text-align: center;
+      border-top: none;
+    }
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--dim);
+      letter-spacing: 0.02em;
+      margin-bottom: 36px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.8;
+    }
+    .hero-h1 {
+      font-size: clamp(40px, 5.5vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      max-width: 880px;
+      margin: 0 auto 28px;
+    }
+    .hero-h1 .accent { color: var(--orange); }
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 72px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+    .hero-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 720px;
+      margin: 0 auto 28px;
+      text-align: left;
+    }
+    .hero-card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 28px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .hero-card.c-orange::before { background: var(--orange); }
+    .hero-card.c-blue::before   { background: var(--blue); }
+    .hero-card-cat {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .hero-card-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .hero-card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+      flex: 1;
+    }
+    .hero-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 6px;
+      transition: gap 0.18s;
+    }
+    .hero-card-cta:hover { gap: 10px; }
+    .hero-card.c-orange .hero-card-cta { color: var(--orange); }
+    .hero-card.c-blue   .hero-card-cta { color: var(--blue); }
+    .hero-card-cta.is-mono {
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--dim);
+      border: 1px solid #1a1a1a;
+      padding: 6px 14px;
+      border-radius: 3px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ════════════════════════════════════════════════
+       PILLARS
+    ════════════════════════════════════════════════ */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .pillar {
+      background: var(--card);
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .pillar-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+    }
+    .pillar-name {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .pillar-product {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .pillar-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    /* ════════════════════════════════════════════════
+       PROOF / MISSION
+    ════════════════════════════════════════════════ */
+    .proof-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 96px;
+      align-items: start;
+    }
+    .proof-quote {
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .proof-sub {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 48px;
+      max-width: 440px;
+    }
+    .proof-stats {
+      display: flex;
+      gap: 36px;
+    }
+    .proof-stat-val {
+      font-family: var(--mono);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--orange);
+      display: block;
+    }
+    .proof-stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      display: block;
+      margin-top: 3px;
+    }
+    .proof-points {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding-top: 6px;
+    }
+    .proof-point {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .point-mark {
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .point-mark.o { background: rgba(255,107,0,0.12); color: var(--orange); }
+    .point-mark.b { background: rgba(0,102,255,0.12);  color: var(--blue); }
+    .point-text strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 3px;
+    }
+    .point-text span {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ════════════════════════════════════════════════
+       PRODUCTS
+    ════════════════════════════════════════════════ */
+    .products-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 40px;
+    }
+    .product-logo {
+      margin-bottom: 28px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+    }
+    .product-logo .logo-d3       { height: 30px; width: auto; display: block; }
+    .product-logo .logo-interouter { height: 88px; width: auto; display: block; }
+    .product-name {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+    .product-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+    .product-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .product-fact {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 3px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ════════════════════════════════════════════════
+       WHY NOW
+    ════════════════════════════════════════════════ */
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 96px;
+      align-items: start;
+    }
+    .why-h2 {
+      font-size: clamp(52px, 6vw, 80px);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+      margin-bottom: 48px;
+    }
+    .why-bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .why-bullet {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 12px;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+    .why-bullet::before {
+      content: '→';
+      color: var(--orange);
+      font-weight: 700;
+      margin-top: 1px;
+    }
+    .why-highlight {
+      border-left: 2px solid var(--orange);
+      padding: 16px 22px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.55;
+      color: var(--white);
+      background: rgba(255,107,0,0.05);
+      border-radius: 0 4px 4px 0;
+    }
+    .form-block { position: sticky; top: 96px; }
+    .form-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 10px;
+    }
+    .form-sub {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .email-form { display: flex; flex-direction: column; gap: 10px; }
+    .email-input {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .email-input::placeholder { color: #333; }
+    .email-input:focus { border-color: rgba(255,107,0,0.5); }
+    .form-note {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: #333;
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ════════════════════════════════════════════════
+       ROADMAP
+    ════════════════════════════════════════════════ */
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .roadmap-col {
+      position: relative;
+      background: var(--card);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .roadmap-col.is-active { background: #0f0f0f; }
+    .roadmap-col.is-active::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--orange);
+    }
+    .roadmap-period {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .roadmap-col.is-active .roadmap-period { color: var(--orange); }
+    .roadmap-name {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    .roadmap-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    /* ════════════════════════════════════════════════
+       FOUNDER
+    ════════════════════════════════════════════════ */
+    .founder-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 96px;
+      align-items: start;
+    }
+    .founder-h2 {
+      font-size: clamp(52px, 6vw, 80px);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+      margin-bottom: 28px;
+    }
+    .founder-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 20px;
+      max-width: 420px;
+    }
+    .founder-name {
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 0.02em;
+      margin-top: 8px;
+    }
+    .founder-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 6px;
+    }
+    .founder-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 16px 20px;
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .founder-link:hover { border-color: #2e2e2e; background: #111; }
+    .founder-link.is-featured {
+      border-color: rgba(0,102,255,0.25);
+      background: rgba(0,102,255,0.04);
+    }
+    .founder-link.is-featured:hover { border-color: rgba(0,102,255,0.5); }
+    .founder-link-label {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .founder-link.is-featured .founder-link-label { color: var(--blue); }
+    .founder-link-handle {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+      letter-spacing: 0.02em;
+    }
+    .founder-link-arrow {
+      color: var(--muted);
+      font-size: 18px;
+      transition: transform 0.18s;
+      flex-shrink: 0;
+    }
+    .founder-link.is-featured .founder-link-arrow { color: var(--blue); }
+    .founder-link:hover .founder-link-arrow { transform: translateX(4px); }
+
+    /* ════════════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 72px 0 40px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 64px;
+    }
+    .footer-logo svg { height: 30px; width: auto; display: block; margin-bottom: 16px; }
+    .footer-tagline {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .footer-col-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 16px;
+    }
+    .footer-col-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-col-links a {
+      font-size: 14px;
+      color: #555;
+      transition: color 0.18s;
+    }
+    .footer-col-links a:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #333;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 960px) {
+      .container, .nav-inner { padding-left: 28px; padding-right: 28px; }
+      section { padding: 72px 0; }
+      .hero-cards { grid-template-columns: 1fr; max-width: 380px; }
+      .pillars-grid { grid-template-columns: 1fr; }
+      .proof-grid, .products-grid, .why-grid, .founder-grid { grid-template-columns: 1fr; gap: 48px; }
+      .roadmap-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 600px) {
+      .container, .nav-inner { padding-left: 20px; padding-right: 20px; }
+      .nav-links { display: none; }
+      .hero-h1 { font-size: 36px; }
+      .why-h2, .founder-h2 { font-size: 44px; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+      .proof-stats { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       NAV
+  ══════════════════════════════════════════════ -->
+  <nav class="nav">
+    <div class="nav-inner">
+
+      <a href="/" class="nav-logo" aria-label="decision3.ai">
+        <!-- d3-wordmark.svg inline -->
+        <svg viewBox="0 0 680 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g transform="translate(52,6)">
+            <path d="M6,0 Q72,38 6,76" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="8,4"/>
+            <path d="M6,10 Q59,38 6,66" fill="none" stroke="#aaaaaa" stroke-width="1.5" stroke-dasharray="7,4"/>
+            <path d="M6,20 Q47,38 6,56" fill="none" stroke="#FF9A00" stroke-width="1.4" stroke-dasharray="6,4"/>
+            <path d="M6,30 Q35,38 6,46" fill="none" stroke="#FF6B00" stroke-width="1.2" stroke-dasharray="5,4"/>
+            <circle cx="39" cy="38" r="4" fill="#FF6B00"/>
+            <circle cx="29" cy="38" r="2.8" fill="#FF9A00"/>
+            <circle cx="21" cy="38" r="1.8" fill="#FF6B00" opacity="0.6"/>
+            <circle cx="15" cy="38" r="1.8" fill="#0066FF"/>
+            <circle cx="9" cy="38" r="1.2" fill="#003080"/>
+          </g>
+          <text x="114" y="58" font-family="'Space Grotesk',sans-serif" font-size="50" font-weight="700" letter-spacing="-2">
+            <tspan fill="#ffffff">ecision</tspan><tspan fill="#FF6B00">3</tspan>
+          </text>
+          <text x="114" y="80" font-family="'JetBrains Mono',monospace" font-size="10" fill="#444444" letter-spacing="3">DECIDE WHERE TO GO</text>
+        </svg>
+      </a>
+
+      <div class="nav-right">
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#products">Products</a>
+          <a href="#mission">Mission</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="https://github.com/victordeflos" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
+        <a href="#why-now" class="btn btn-orange">Get Early Access</a>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="container">
+
+      <p class="hero-eyebrow">"I was building an AI agent. The infrastructure I needed didn't exist."</p>
+
+      <h1 class="hero-h1">
+        The operating system for the<br>
+        <span class="accent">autonomous AI economy.</span>
+      </h1>
+
+      <p class="hero-sub">Agents need to pay, remember, and be accountable. We build the open layer — Web2 and Web3.</p>
+
+      <div class="hero-cards">
+        <div class="hero-card c-orange">
+          <span class="hero-card-cat">For users</span>
+          <div class="hero-card-title">Use AI agents</div>
+          <p class="hero-card-desc">EvoAgent learns from feedback and acts on your behalf across the web.</p>
+          <a href="#products" class="hero-card-cta">Try EvoAgent <span>→</span></a>
+        </div>
+        <div class="hero-card c-blue">
+          <span class="hero-card-cat">For builders</span>
+          <div class="hero-card-title">Build AI agents</div>
+          <p class="hero-card-desc">Open source x402 middleware. Facilitator-agnostic. Production-ready.</p>
+          <a href="#products" class="hero-card-cta is-mono">npm install interouter <span>→</span></a>
+        </div>
+      </div>
+
+      <div class="hero-badges">
+        <span class="hero-badge">Interouter v0.1.6 · live on npm</span>
+        <span class="hero-badge">45/45 tests · MIT licensed</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       THREE PILLARS
+  ══════════════════════════════════════════════ -->
+  <section id="pillars">
+    <div class="container">
+      <p class="section-label">Three pillars. One operating system.</p>
+      <div class="pillars-grid">
+
+        <div class="pillar">
+          <span class="pillar-num">01</span>
+          <div class="pillar-name">PAYMENT</div>
+          <div class="pillar-product">Interouter</div>
+          <p class="pillar-desc">x402 facilitator-agnostic middleware. Cross-facilitator compatibility. Agents pay each other with zero friction.</p>
+          <div><span class="badge badge-green"><span class="dot"></span> LIVE · v0.1.6</span></div>
+        </div>
+
+        <div class="pillar">
+          <span class="pillar-num">02</span>
+          <div class="pillar-name">CONTEXT</div>
+          <div class="pillar-product">D3-ACP Protocol</div>
+          <p class="pillar-desc">Bounded memory. No hallucination drift. Agents remember across sessions without losing coherence.</p>
+          <div><span class="badge badge-orange">Q3 2026</span></div>
+        </div>
+
+        <div class="pillar">
+          <span class="pillar-num">03</span>
+          <div class="pillar-name">IDENTITY</div>
+          <div class="pillar-product">DID Layer</div>
+          <p class="pillar-desc">Agents act for named individuals. Verifiable, accountable, and privacy-preserving identity for the AI economy.</p>
+          <div><span class="badge badge-blue">Q4 2026</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       PROOF / MISSION
+  ══════════════════════════════════════════════ -->
+  <section id="mission">
+    <div class="container">
+      <div class="proof-grid">
+
+        <div>
+          <div class="proof-quote">"This is dogfooding,<br>not theorizing."</div>
+          <p class="proof-sub">EvoAgent is decision3's first consumer — built on Interouter, proving the protocol works end-to-end before anyone else ships it. Real product. Real transactions. Real proof.</p>
+          <div class="proof-stats">
+            <div>
+              <span class="proof-stat-val">45/45</span>
+              <span class="proof-stat-label">tests passing</span>
+            </div>
+            <div>
+              <span class="proof-stat-val">MIT</span>
+              <span class="proof-stat-label">licensed</span>
+            </div>
+            <div>
+              <span class="proof-stat-val">v0.1.6</span>
+              <span class="proof-stat-label">live on npm</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="proof-points">
+          <div class="proof-point">
+            <div class="point-mark o">+</div>
+            <div class="point-text">
+              <strong>Web2 + Web3 compatible</strong>
+              <span>Works with REST APIs and blockchain networks. No vendor lock-in.</span>
+            </div>
+          </div>
+          <div class="proof-point">
+            <div class="point-mark o">+</div>
+            <div class="point-text">
+              <strong>NFT-native investment</strong>
+              <span>Permanent on-chain stake in the protocol. Own a piece of the infrastructure.</span>
+            </div>
+          </div>
+          <div class="proof-point">
+            <div class="point-mark b">+</div>
+            <div class="point-text">
+              <strong>D3 token ecosystem</strong>
+              <span>Native token for governance, staking, and protocol access.</span>
+            </div>
+          </div>
+          <div class="proof-point">
+            <div class="point-mark b">+</div>
+            <div class="point-text">
+              <strong>Permanent company</strong>
+              <span>Built to outlast any single product cycle. Infrastructure, not a feature.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       PRODUCTS
+  ══════════════════════════════════════════════ -->
+  <section id="products">
+    <div class="container">
+      <p class="section-label">Products</p>
+      <div class="products-grid">
+
+        <div class="product-card">
+          <div class="product-logo">
+            <!-- d3-wordmark.svg inline -->
+            <svg class="logo-d3" viewBox="0 0 680 90" xmlns="http://www.w3.org/2000/svg" aria-label="decision3" role="img">
+              <g transform="translate(52,6)">
+                <path d="M6,0 Q72,38 6,76" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="8,4"/>
+                <path d="M6,10 Q59,38 6,66" fill="none" stroke="#aaaaaa" stroke-width="1.5" stroke-dasharray="7,4"/>
+                <path d="M6,20 Q47,38 6,56" fill="none" stroke="#FF9A00" stroke-width="1.4" stroke-dasharray="6,4"/>
+                <path d="M6,30 Q35,38 6,46" fill="none" stroke="#FF6B00" stroke-width="1.2" stroke-dasharray="5,4"/>
+                <circle cx="39" cy="38" r="4" fill="#FF6B00"/>
+                <circle cx="29" cy="38" r="2.8" fill="#FF9A00"/>
+                <circle cx="21" cy="38" r="1.8" fill="#FF6B00" opacity="0.6"/>
+                <circle cx="15" cy="38" r="1.8" fill="#0066FF"/>
+                <circle cx="9" cy="38" r="1.2" fill="#003080"/>
+              </g>
+              <text x="114" y="58" font-family="'Space Grotesk',sans-serif" font-size="50" font-weight="700" letter-spacing="-2">
+                <tspan fill="#ffffff">ecision</tspan><tspan fill="#FF6B00">3</tspan>
+              </text>
+              <text x="114" y="80" font-family="'JetBrains Mono',monospace" font-size="10" fill="#444444" letter-spacing="3">DECIDE WHERE TO GO</text>
+            </svg>
+          </div>
+          <div class="product-name">EvoAgent</div>
+          <p class="product-desc">A personal AI agent that evolves with you. EvoAgent learns from feedback, manages tasks, and navigates Web2 and Web3 — the first real-world consumer of the decision3 protocol stack.</p>
+          <div class="product-facts">
+            <span class="product-fact">Web2 + Web3</span>
+            <span class="product-fact">Free tier</span>
+            <span class="product-fact">NEAR wallet</span>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-logo">
+            <!-- interouter.svg inline -->
+            <svg class="logo-interouter" width="400" height="280" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" aria-label="Interouter" role="img"><rect width="400" height="280" fill="#0a0a0a"/><g transform="translate(200,160)"><g stroke="#ffffff" stroke-width="1.4" fill="none"><rect x="-114.0" y="-4.0" width="8" height="8" transform="rotate(-90.0 -110.0 -0.0)"/><rect x="-112.9" y="-19.7" width="8" height="8" transform="rotate(-81.8 -108.9 -15.7)"/><rect x="-109.5" y="-35.0" width="8" height="8" transform="rotate(-73.6 -105.5 -31.0)"/><rect x="-104.1" y="-49.7" width="8" height="8" transform="rotate(-65.5 -100.1 -45.7)"/><rect x="-96.5" y="-63.5" width="8" height="8" transform="rotate(-57.3 -92.5 -59.5)"/><rect x="-87.1" y="-76.0" width="8" height="8" transform="rotate(-49.1 -83.1 -72.0)"/><rect x="-76.0" y="-87.1" width="8" height="8" transform="rotate(-40.9 -72.0 -83.1)"/><rect x="-63.5" y="-96.5" width="8" height="8" transform="rotate(-32.7 -59.5 -92.5)"/><rect x="-49.7" y="-104.1" width="8" height="8" transform="rotate(-24.5 -45.7 -100.1)"/><rect x="-35.0" y="-109.5" width="8" height="8" transform="rotate(-16.4 -31.0 -105.5)"/><rect x="-19.7" y="-112.9" width="8" height="8" transform="rotate(-8.2 -15.7 -108.9)"/><rect x="-4.0" y="-114.0" width="8" height="8" transform="rotate(0.0 0.0 -110.0)"/><rect x="11.7" y="-112.9" width="8" height="8" transform="rotate(8.2 15.7 -108.9)"/><rect x="27.0" y="-109.5" width="8" height="8" transform="rotate(16.4 31.0 -105.5)"/><rect x="41.7" y="-104.1" width="8" height="8" transform="rotate(24.5 45.7 -100.1)"/><rect x="55.5" y="-96.5" width="8" height="8" transform="rotate(32.7 59.5 -92.5)"/><rect x="68.0" y="-87.1" width="8" height="8" transform="rotate(40.9 72.0 -83.1)"/><rect x="79.1" y="-76.0" width="8" height="8" transform="rotate(49.1 83.1 -72.0)"/><rect x="88.5" y="-63.5" width="8" height="8" transform="rotate(57.3 92.5 -59.5)"/><rect x="96.1" y="-49.7" width="8" height="8" transform="rotate(65.5 100.1 -45.7)"/><rect x="101.5" y="-35.0" width="8" height="8" transform="rotate(73.6 105.5 -31.0)"/><rect x="104.9" y="-19.7" width="8" height="8" transform="rotate(81.8 108.9 -15.7)"/><rect x="106.0" y="-4.0" width="8" height="8" transform="rotate(90.0 110.0 -0.0)"/></g><path d="M-92,0 A92,92 0 0,1 92,0" fill="none" stroke="#aaaaaa" stroke-width="1.5" stroke-dasharray="7,4"/><path d="M-72,0 A72,72 0 0,1 72,0" fill="none" stroke="#FF9A00" stroke-width="1.4" stroke-dasharray="6,4"/><path d="M-52,0 A52,52 0 0,1 52,0" fill="none" stroke="#FF6B00" stroke-width="1.2" stroke-dasharray="5,4"/><circle cx="0" cy="-92" r="6" fill="#FF6B00"/><circle cx="0" cy="-72" r="4" fill="#FF9A00"/><circle cx="0" cy="-56" r="2.5" fill="#FF6B00" opacity="0.6"/><circle cx="0" cy="-42" r="3" fill="#0066FF"/><circle cx="0" cy="-30" r="1.8" fill="#003080"/></g><text x="200" y="205" font-family="'Space Grotesk',Arial,sans-serif" font-size="44" font-weight="700" text-anchor="middle" letter-spacing="6" textLength="220" lengthAdjust="spacing"><tspan fill="#ffffff">Inte</tspan><tspan fill="#FF6B00">r</tspan><tspan fill="#0066FF">outer</tspan></text><text x="200" y="232" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#666666" letter-spacing="2" text-anchor="middle">FROM INSIDE YOUR APP — TO THE OUTSIDE WORLD</text></svg>
+          </div>
+          <div class="product-name">Interouter</div>
+          <p class="product-desc">x402 middleware that routes agent payments across facilitators. Plug into any AI application and get cross-chain, cross-service payment routing with a single install.</p>
+          <div class="product-facts">
+            <span class="product-fact">45/45 tests</span>
+            <span class="product-fact">MIT</span>
+            <span class="product-fact">OpenLedger</span>
+            <span class="product-fact">OpenGradient</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       WHY NOW
+  ══════════════════════════════════════════════ -->
+  <section id="why-now">
+    <div class="container">
+      <div class="why-grid">
+
+        <div>
+          <h2 class="why-h2">Why<br>now.</h2>
+          <div class="why-bullets">
+            <div class="why-bullet">The Linux Foundation x402 standard just landed — a payments protocol for AI agents is being standardized right now.</div>
+            <div class="why-bullet">Coinbase, a16z, and others are already shipping x402 facilitators. The ecosystem is forming in real time.</div>
+            <div class="why-bullet">AI agents are graduating from demos to production. They need financial rails, persistent memory, and legal identity.</div>
+            <div class="why-bullet">First-mover infrastructure gets locked in. The tooling teams ship first will define how agents transact for a decade.</div>
+          </div>
+          <div class="why-highlight">"The window is open. It will not be open in 12 months."</div>
+        </div>
+
+        <div>
+          <div class="form-block">
+            <div class="form-title">Join the movement.</div>
+            <p class="form-sub">Get early access to EvoAgent and stay ahead of the AI economy transition. No spam — just signal.</p>
+            <form class="email-form" id="signup-form">
+              <input type="email" class="email-input" placeholder="your@email.com" required autocomplete="email" />
+              <button type="submit" class="btn-submit">Get Early Access →</button>
+            </form>
+            <p class="form-note">No spam. Unsubscribe anytime.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       ROADMAP
+  ══════════════════════════════════════════════ -->
+  <section id="roadmap">
+    <div class="container">
+      <p class="section-label">Roadmap</p>
+      <div class="roadmap-grid">
+
+        <div class="roadmap-col is-active">
+          <span class="roadmap-period">NOW</span>
+          <div class="roadmap-name">Interouter v0.1.6</div>
+          <p class="roadmap-desc">x402 middleware live on npm. 45/45 tests passing. Facilitator-agnostic.</p>
+          <div><span class="badge badge-green"><span class="dot"></span> LIVE</span></div>
+        </div>
+
+        <div class="roadmap-col">
+          <span class="roadmap-period">Q3 2026</span>
+          <div class="roadmap-name">Context Protocol</div>
+          <p class="roadmap-desc">D3-ACP: bounded memory for agents. No hallucination drift across sessions.</p>
+          <div><span class="badge badge-orange">UPCOMING</span></div>
+        </div>
+
+        <div class="roadmap-col">
+          <span class="roadmap-period">Q4 2026</span>
+          <div class="roadmap-name">Identity DID</div>
+          <p class="roadmap-desc">Decentralized identity for agents acting on behalf of real individuals.</p>
+          <div><span class="badge badge-blue">PLANNED</span></div>
+        </div>
+
+        <div class="roadmap-col">
+          <span class="roadmap-period">Q1 2027</span>
+          <div class="roadmap-name">Pocket Agent CLI</div>
+          <p class="roadmap-desc">Local-first CLI to deploy and manage personal AI agents from your terminal.</p>
+          <div><span class="badge badge-dim">FUTURE</span></div>
+        </div>
+
+        <div class="roadmap-col">
+          <span class="roadmap-period">2027+</span>
+          <div class="roadmap-name">Hosted Runtime</div>
+          <p class="roadmap-desc">Managed infrastructure for deploying agents at scale with full observability.</p>
+          <div><span class="badge badge-dim">FUTURE</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FOUNDER
+  ══════════════════════════════════════════════ -->
+  <section id="founder">
+    <div class="container">
+      <div class="founder-grid">
+
+        <div>
+          <h2 class="founder-h2">The<br>founder.</h2>
+          <p class="founder-desc">Not theorizing from the outside. Building the infrastructure that didn't exist, starting with the problem I faced building my own AI agent. Every line of Interouter was written while shipping EvoAgent.</p>
+          <p class="founder-desc">Dogfooding is the only honest proof-of-work. If the protocol can't run my own product, it won't run yours.</p>
+          <div class="founder-name">victordeflos</div>
+        </div>
+
+        <div>
+          <div class="founder-links">
+            <a href="https://github.com/victordeflos" target="_blank" rel="noopener noreferrer" class="founder-link">
+              <div>
+                <div class="founder-link-label">GitHub</div>
+                <div class="founder-link-handle">github.com/victordeflos</div>
+              </div>
+              <span class="founder-link-arrow">→</span>
+            </a>
+            <a href="https://www.npmjs.com/~victordeflos" target="_blank" rel="noopener noreferrer" class="founder-link">
+              <div>
+                <div class="founder-link-label">npm</div>
+                <div class="founder-link-handle">npmjs.com/~victordeflos</div>
+              </div>
+              <span class="founder-link-arrow">→</span>
+            </a>
+            <a href="mailto:victor@decision3.ai" class="founder-link">
+              <div>
+                <div class="founder-link-label">Email</div>
+                <div class="founder-link-handle">victor@decision3.ai</div>
+              </div>
+              <span class="founder-link-arrow">→</span>
+            </a>
+            <a href="mailto:invest@decision3.ai" class="founder-link is-featured">
+              <div>
+                <div class="founder-link-label">Investors &amp; design partners</div>
+                <div class="founder-link-handle">invest@decision3.ai</div>
+              </div>
+              <span class="founder-link-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════ -->
+  <footer>
+    <div class="container">
+
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">
+            <!-- d3-wordmark.svg inline -->
+            <svg viewBox="0 0 680 90" xmlns="http://www.w3.org/2000/svg" aria-label="decision3.ai" role="img">
+              <g transform="translate(52,6)">
+                <path d="M6,0 Q72,38 6,76" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="8,4"/>
+                <path d="M6,10 Q59,38 6,66" fill="none" stroke="#aaaaaa" stroke-width="1.5" stroke-dasharray="7,4"/>
+                <path d="M6,20 Q47,38 6,56" fill="none" stroke="#FF9A00" stroke-width="1.4" stroke-dasharray="6,4"/>
+                <path d="M6,30 Q35,38 6,46" fill="none" stroke="#FF6B00" stroke-width="1.2" stroke-dasharray="5,4"/>
+                <circle cx="39" cy="38" r="4" fill="#FF6B00"/>
+                <circle cx="29" cy="38" r="2.8" fill="#FF9A00"/>
+                <circle cx="21" cy="38" r="1.8" fill="#FF6B00" opacity="0.6"/>
+                <circle cx="15" cy="38" r="1.8" fill="#0066FF"/>
+                <circle cx="9" cy="38" r="1.2" fill="#003080"/>
+              </g>
+              <text x="114" y="58" font-family="'Space Grotesk',sans-serif" font-size="50" font-weight="700" letter-spacing="-2">
+                <tspan fill="#ffffff">ecision</tspan><tspan fill="#FF6B00">3</tspan>
+              </text>
+              <text x="114" y="80" font-family="'JetBrains Mono',monospace" font-size="10" fill="#444444" letter-spacing="3">DECIDE WHERE TO GO</text>
+            </svg>
+          </div>
+          <div class="footer-tagline">OS for the autonomous AI economy</div>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Products</div>
+          <div class="footer-col-links">
+            <a href="#products">EvoAgent</a>
+            <a href="#products">Interouter</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Company</div>
+          <div class="footer-col-links">
+            <a href="https://github.com/victordeflos" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.npmjs.com/~victordeflos" target="_blank" rel="noopener noreferrer">npm</a>
+            <a href="mailto:invest@decision3.ai">Investors</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-col-links">
+            <a href="mailto:victor@decision3.ai">victor@decision3.ai</a>
+            <a href="mailto:invest@decision3.ai">invest@decision3.ai</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 decision3.ai — All rights reserved.</span>
+        <span>Interouter · MIT License · v0.1.6</span>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var input = this.querySelector('input[type="email"]');
+      var btn = this.querySelector('button');
+      btn.textContent = 'You\'re on the list ✓';
+      btn.style.background = '#00c850';
+      btn.style.cursor = 'default';
+      input.disabled = true;
+      btn.disabled = true;
+    });
+  </script>
+
+</body>
+</html>

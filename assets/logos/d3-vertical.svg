@@ -1,0 +1,23 @@
+<svg width="220" viewBox="0 0 220 250" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(78,12)">
+  <path d="M8,0 Q108,87 8,175" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="8,4"/>
+  <path d="M8,15 Q90,87 8,160" fill="none" stroke="#aaaaaa" stroke-width="1.5" stroke-dasharray="7,4"/>
+  <path d="M8,30 Q72,87 8,145" fill="none" stroke="#FF9A00" stroke-width="1.4" stroke-dasharray="6,4"/>
+  <path d="M8,45 Q54,87 8,130" fill="none" stroke="#FF6B00" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <circle cx="60" cy="87" r="5.5" fill="#FF6B00"/>
+  <circle cx="46" cy="87" r="3.5" fill="#FF9A00"/>
+  <circle cx="34" cy="87" r="2" fill="#FF6B00" opacity="0.6"/>
+  <circle cx="23" cy="87" r="2.5" fill="#0066FF"/>
+  <circle cx="14" cy="87" r="1.5" fill="#003080"/>
+</g>
+<text x="66" y="30" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#ffffff">D</text>
+<text x="66" y="50" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#ffffff">e</text>
+<text x="66" y="70" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#ffffff">c</text>
+<text x="66" y="90" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#ffffff">i</text>
+<text x="66" y="110" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#ffffff">s</text>
+<text x="66" y="130" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#ffffff">i</text>
+<text x="66" y="150" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#ffffff">o</text>
+<text x="66" y="170" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#ffffff">n</text>
+<text x="66" y="193" font-family="'Space Grotesk',sans-serif" font-size="21" font-weight="700" fill="#FF6B00">3</text>
+<text x="110" y="232" font-family="'JetBrains Mono',monospace" font-size="8" fill="#444444" letter-spacing="2" text-anchor="middle">DECIDE WHERE TO GO</text>
+</svg>
